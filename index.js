@@ -1,6 +1,6 @@
 // app.js
 const express = require('express');
-const userRoutes = require('./routes/UserRoutes');
+const userRoutes = require('./routes/IncomeInRoutes');
 const app = express();
 const mongoose = require('mongoose');
 const port = 3000;
@@ -9,7 +9,8 @@ const port = 3000;
 app.use(express.json());
 
 // Routes
-app.use('/users', userRoutes);
+app.use('/IncomeIn', userRoutes);
+
 
 
 mongoose.connect("mongodb+srv://flawyer:zINIerlXM1DzXDmY@cluster0.ski5o78.mongodb.net/MisApi?retryWrites=true&w=majority")
