@@ -3,17 +3,12 @@ const { Decimal128 } = require('mongodb');
 
 // Define schema for Income
 const IncomeSchema = new mongoose.Schema({
-  incomeId: {
-    type: String,
-    required: true,
-    unique: true // Primary key
-  },
   incomeAmount: {
     type: Decimal128,
     required: true
   },
   incomeTypeId: {
-    type: mongoose.Schema.Types.ObjectId, // Foreign key referencing IncomeType
+    type: mongoose.Schema.Types.ObjectId, 
     ref: 'IncomeType',
     required: true
   },
@@ -22,7 +17,7 @@ const IncomeSchema = new mongoose.Schema({
     required: true
   },
   incomeInId: {
-    type: mongoose.Schema.Types.ObjectId, // Foreign key referencing IncomeIn
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'IncomeIn',
     required: true
   }

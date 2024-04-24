@@ -1,5 +1,7 @@
 const express = require('express');
 const IncomeIn = require('./routes/IncomeInRoutes'); 
+const Income  = require('./routes/IncomeRoutes');
+const IncomeType = require('./routes/IncomeTypeRoutes')
 const app = express();
 const mongoose = require('mongoose');
 const port = 3000;
@@ -10,6 +12,11 @@ app.use(express.json());
 
 //incomedetail ka basxa bhanera
 app.use('/api', IncomeIn);
+//incometype income ko source
+app.use('/api',IncomeType)
+//income 
+app.use('/api',Income)
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

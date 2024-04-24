@@ -1,5 +1,6 @@
 
 const {IncomeIn} = require('../models/incomein.model');
+const {Income} = require('../models/income.model');
 
 exports.InsertIncomeIn = async (req, res) => {
   try {
@@ -56,7 +57,11 @@ exports.GetIncomeIn = async (req, res) => {
       const { id } = req.params;
   
       const deletedIncome = await IncomeIn.findByIdAndDelete(id);
-  
+      const hasReferences = await Income.exists({ incomeInId: id });
+
+      if (hasReferences) {
+        return res.status(400).json({ error: 'Cannot delete. There are references to this income record.' });
+      }
       if (!deletedIncome) {
         return res.status(404).json({ error: 'Income record not found' });
       }

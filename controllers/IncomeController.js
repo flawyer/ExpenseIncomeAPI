@@ -1,9 +1,9 @@
-const {IncomeType} = require('../models/incometype.model');
 const {Income} = require('../models/income.model');
-exports.InsertIncomeType = async(req,res) =>{
+
+exports.InsertIncome = async(req,res) =>{
     try{
-        const inIncomeType = new IncomeType(req.body);
-        await inIncomeType.save();
+        const inIncome = new Income(req.body);
+        await inIncome.save();
         res.status(200).json({ message: 'Income Type created successfully' });
     }
     catch(erro){
@@ -12,18 +12,18 @@ exports.InsertIncomeType = async(req,res) =>{
 
 }
 
-exports.GetIncomeType = async (req, res) => {
+exports.GetIncome = async (req, res) => {
   try{
   const {id} = req.params;
-  const GetIncomeType = await IncomeType.findById(id);
-  res.status(200).json(GetIncomeType);
+  const GetIncome = await Income.findById(id);
+  res.status(200).json(GetIncome);
   }
   catch(error){
     res.Status(500).json({message: error.message});
   }
   }
 
-  exports.UpdateIncomeType= async (req, res) => {
+  exports.UpdateIncome= async (req, res) => {
     try {
       const { id } = req.params;
       const updateData = req.body;
@@ -32,7 +32,7 @@ exports.GetIncomeType = async (req, res) => {
         return res.status(400).json({ error: 'Update data is required' });
       }
   
-      const updatedIncomeType = await IncomeType.findByIdAndUpdate(id, updateData, { new: true });
+      const updatedIncomeType = await Income.findByIdAndUpdate(id, updateData, { new: true });
   
       if (!updatedIncomeType) {
         return res.status(404).json({  error: 'Income Type record not found' });
@@ -44,27 +44,23 @@ exports.GetIncomeType = async (req, res) => {
     }
   };
 
-  exports.GetAllIncomeType = async (req, res) => {
+  exports.GetAllIncome = async (req, res) => {
     try {
-      const incomeType = await IncomeType.find();
+      const income = await Income.find();
   
-      res.status(200).json(incomeType);
+      res.status(200).json(income);
     } catch (error) {
       res.status(500).json({ error: 'Internal server error' });
     }
   };
 
-  exports.DeleteIncomeType = async (req, res) => {
+  exports.DeleteIncome = async (req, res) => {
     try {
       const { id } = req.params;
-      const hasReferences = await Income.exists({ incomeTypeId: id });
-
-      if (hasReferences) {
-        return res.status(400).json({ error: 'Cannot delete. There are references to this income record.' });
-      }
-      const deletedIncomeType = await IncomeType.findByIdAndDelete(id);
   
-      if (!deletedIncomeType) {
+      const deletedIncome = await Income.findByIdAndDelete(id);
+   
+      if (!deletedIncome) {
         return res.status(404).json({ error: 'Income record not found' });
       }
   
