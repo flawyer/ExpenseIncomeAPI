@@ -33,16 +33,16 @@ exports.GetIncomeIn = async (req, res) => {
       const updatedIncome = await IncomeIn.findByIdAndUpdate(id, updateData, { new: true });
   
       if (!updatedIncome) {
-        return res.status(404).json({ error: 'Income record not found' });
+        return res.status(404).json({ error: 'Income In record not found' });
       }
   
-      res.status(200).json({ message: 'Income record updated successfully', updatedIncome });
+      res.status(200).json({ message: 'Income In record updated successfully', updatedIncome });
     } catch (error) {
       console.error('Error updating income record:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   };
-  exports.GetIncomeIns = async (req, res) => {
+  exports.GetAllIncomeIn = async (req, res) => {
     try {
       const incomeIns = await IncomeIn.find();
   
