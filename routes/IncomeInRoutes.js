@@ -1,9 +1,12 @@
-// routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
 const IncomeIn = require('../controllers/IncomeInController');
 
-// Routes
-router.post('/IncomeIn', IncomeIn.InsertIncomeIn);
 
-module.exports = router;
+router.post('/IncomeIn', IncomeIn.InsertIncomeIn);
+router.get('/IncomeIn/:id', IncomeIn.GetIncomeIn);
+router.put('/IncomeIn/:id', IncomeIn.UpdateIncomeIn);
+router.get('/IncomeIn', IncomeIn.GetIncomeIns);
+router.delete('/IncomeIn/:id', IncomeIn.DeleteIncomeIn);
+
+module.exports =  router ; 
