@@ -1,24 +1,22 @@
 const mongoose = require('mongoose');
 const { Decimal128 } = require('mongodb');
 
-// Define schema for Income
+
 const IncomeSchema = new mongoose.Schema({
   incomeAmount: {
     type: Decimal128,
     required: true
   },
-  incomeTypeId: {
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'IncomeType',
+  incomeSource: {
+    type: String, 
     required: true
   },
   incomeDate: {
     type: Date,
     required: true
   },
-  incomeInId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'IncomeIn',
+  incomeForm: {
+    type: String,
     required: true
   }
 });
