@@ -11,11 +11,11 @@ const ExpenseSchema = new mongoose.Schema({
     type: String, 
     required: true
   },
-  incomeDate: {
+  expenseDate: {
     type: Date,
     required: true
   },
-  incomeFormId: {
+  expenseForm: {
     type: String,
     required: true
   }
@@ -26,4 +26,4 @@ const ExpenseSchema = new mongoose.Schema({
 
 const Expense = mongoose.model('Expense', ExpenseSchema);
 
-module.exports = { Expnse};
+module.exports = { Expense};
