@@ -1,4 +1,5 @@
 const express = require('express'); 
+const cors = require('cors');
 const Income  = require('./routes/IncomeRoutes');
 const Expense = require('./routes/ExpenseRoutes');
 const Details = require('./routes/DetailRoutes');
@@ -8,7 +9,7 @@ const port = 3000;
 
 // Middleware
 app.use(express.json());
-
+app.use(cors());
 
 //income 
 app.use('/api',Income)
