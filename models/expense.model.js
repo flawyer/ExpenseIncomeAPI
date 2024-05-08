@@ -7,7 +7,7 @@ const ExpenseSchema = new mongoose.Schema({
     type: Decimal128,
     required: true
   },
-  expenseType: {
+  expenseTypeId: {
     type: String, 
     required: true
   },
@@ -15,7 +15,7 @@ const ExpenseSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  expenseForm: {
+  expenseFormId: {
     type: String,
     required: true
   }

@@ -7,7 +7,7 @@ const IncomeSchema = new mongoose.Schema({
     type: Decimal128,
     required: true
   },
-  incomeSource: {
+  incomeSourceId: {
     type: String, 
     required: true
   },
@@ -15,7 +15,7 @@ const IncomeSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  incomeForm: {
+  incomeFormId: {
     type: String,
     required: true
   }
