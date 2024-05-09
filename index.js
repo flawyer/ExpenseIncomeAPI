@@ -5,6 +5,10 @@ const Expense = require('./routes/ExpenseRoutes');
 const Details = require('./routes/DetailRoutes');
 const app = express();
 const mongoose = require('mongoose');
+const  IncomeForm  = require('./routes/IncomeFormRoutes');
+const  IncomeSource  = require('./routes/IncomeSourceRoutes');
+const  ExpenseForm  = require('./routes/ExpenseFormRoutes');
+const  ExpenseType  = require('./routes/ExpenseTypeRoutes');
 const port = 3000;
 
 // Middleware
@@ -17,6 +21,11 @@ app.use('/api',Income)
 app.use('/api',Expense)
 //details
 app.use('/api',Details)
+app.use('/api', IncomeForm);
+//incometype income ko source
+app.use('/api',IncomeSource);
+app.use('/api',ExpenseForm);
+app.use('/api',ExpenseType)
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
