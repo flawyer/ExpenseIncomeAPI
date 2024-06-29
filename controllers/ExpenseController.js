@@ -46,9 +46,9 @@ exports.GetExpense = async (req, res) => {
 
   exports.GetAllExpense = async (req, res) => {
     try {
-      const Expense = await Expense.find();
+      const Expenses = await Expense.find();
   
-      res.status(200).json(Expense);
+      res.status(200).json(Expenses);
     } catch (error) {
       res.status(500).json({ error: 'Internal server error' });
     }
