@@ -3,7 +3,7 @@ const router = express.Router();
 const IEDetails = require('../controllers/DetailsController');
 
 
-router.get('/MonthlyEarning', IEDetails.monthlySaving);
+router.get('/DashBoardDetails', IEDetails.DashBoardDetails);
 router.get('/WeeklySaving',IEDetails.weeklySaving)
 router.get('/YearlySaving',IEDetails.yearlySaving)
 // router.get('/WeeklySaving',IEDetails.weeklySaving)
