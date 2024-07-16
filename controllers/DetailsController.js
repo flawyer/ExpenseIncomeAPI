@@ -140,12 +140,12 @@ exports.DashBoardDetails = async (req, res) => {
     const monthlyDetails = await getMonthlyDetails();
     const weeklyDetails = await getWeeklyDetails();
     const yearlyDetails = await getYearlyDetails();
-    const dailySaving = await getDailyDetails();
+    const dailyDetails = await getDailyDetails();
     res.status(200).json({ 
       monthlyDetails, 
       weeklyDetails, 
       yearlyDetails,
-      dailySaving
+      dailyDetails
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
