@@ -217,6 +217,8 @@ exports.DashBoardDetails = async (req, res) => {
     const dailyDetails = await getDailyDetails();
     const cashDetails = await getCashAmount();
     const BankDetails = await getBankAmount();
+    const otherDetails = await getOthers();
+    const maxminDetails = await getExpenseDetails();
     res.status(200).json({ 
       monthlyDetails, 
       weeklyDetails, 
@@ -224,7 +226,8 @@ exports.DashBoardDetails = async (req, res) => {
       dailyDetails,
       cashDetails,
       BankDetails,
-      MinimumExpense 
+      otherDetails,
+      maxminDetails
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
