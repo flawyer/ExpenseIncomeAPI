@@ -1,5 +1,7 @@
-const { Expense, Expense } = require('../models/expense.model');
+const { Expense } = require('../models/expense.model');
 const { Income } = require('../models/income.model');
+const { ExpenseType } = require('../models/expensetype.model');
+const { IncomeType, IncomeSource } = require('../models/incomesource.model');
 
 const getMonthlyDetails = async () => {
   const currentMonth = new Date();
@@ -40,8 +42,10 @@ const getMonthlyDetails = async () => {
 
 const getDailyDetails = async () => {
   const currentDate = new Date();
-  const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0));
-  const endOfDay = new Date(currentDate.setHours(23, 59, 59, 999));
+  const startOfDay = new Date(currentDate);
+  startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date(currentDate);
+  endOfDay.setHours(23, 59, 59, 999);
 
   const incomes = await Income.find({
     incomeDate: {
@@ -67,27 +71,30 @@ const getDailyDetails = async () => {
 
   return { currentDate: startOfDay.toISOString().split('T')[0], totalIncome, totalExpense, dailySaving };
 };
+
 const getWeeklyDetails = async () => {
   const currentDate = new Date();
   const startOfWeek = new Date(currentDate);
-  startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); 
+  startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+  startOfWeek.setHours(0, 0, 0, 0);
   const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6); 
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setHours(23, 59, 59, 999);
 
   const weekStartDate = startOfWeek.toISOString().split('T')[0];
   const weekEndDate = endOfWeek.toISOString().split('T')[0];
 
   const incomes = await Income.find({
     incomeDate: {
-      $gte: weekStartDate,
-      $lte: weekEndDate
+      $gte: startOfWeek,
+      $lte: endOfWeek
     }
   });
 
   const expenses = await Expense.find({
     expenseDate: {
-      $gte: weekStartDate,
-      $lte: weekEndDate
+      $gte: startOfWeek,
+      $lte: endOfWeek
     }
   });
 
@@ -147,6 +154,7 @@ const getOthers = async () => {
   const Amount = totalIncome - totalExpense;
   return Amount;
 }
+
 const getExpenseDetails = async () => {
   const expenses = await Expense.find({});
 
@@ -161,18 +169,42 @@ const getExpenseDetails = async () => {
 
   const expenseAmounts = expenses.map(expense => ({
     amount: parseFloat(expense.expenseAmount),
-    expenseFormId: expense.expenseFormId
+    expenseFormId: expense.expenseTypeId
   }));
 
   const maxExpense = expenseAmounts.reduce((max, expense) => expense.amount > max.amount ? expense : max, expenseAmounts[0]);
   const minExpense = expenseAmounts.reduce((min, expense) => expense.amount < min.amount ? expense : min, expenseAmounts[0]);
 
-  const maxExpenseForm = await ExpenseForm.findById(maxExpense.expenseFormId);
-  const minExpenseForm = await ExpenseForm.findById(minExpense.expenseFormId);
+  const maxExpenseForm = await ExpenseType.findById(maxExpense.expenseFormId);
+  const minExpenseForm = await ExpenseType.findById(minExpense.expenseFormId);
 
   return {
     maxExpenseFormName: maxExpenseForm ? maxExpenseForm.name : null,
     minExpenseFormName: minExpenseForm ? minExpenseForm.name : null
+  };
+}
+
+const getIncomeDetails = async () => {
+  const incomes = await Income.find({});
+
+  if (incomes.length === 0) {
+    return {
+      maxIncome: 0,
+      maxIncomeFormId: null
+    };
+  }
+
+  const incomeAmounts = incomes.map(income => ({
+    amount: parseFloat(income.incomeAmount),
+    incomeFormId: income.incomeTypeId
+  }));
+
+  const maxIncome = incomeAmounts.reduce((max, income) => income.amount > max.amount ? income : max, incomeAmounts[0]);
+
+  const maxIncomeForm = await IncomeSource.findById(maxIncome.incomeFormId);
+
+  return {
+    maxIncomeFormName: maxIncomeForm ? maxIncomeForm.name : null
   };
 }
 
@@ -186,15 +218,15 @@ const getYearlyDetails = async () => {
 
   const incomes = await Income.find({
     incomeDate: {
-      $gte: yearStartDate,
-      $lte: yearEndDate
+      $gte: startOfYear,
+      $lte: endOfYear
     }
   });
 
   const expenses = await Expense.find({
     expenseDate: {
-      $gte: yearStartDate,
-      $lte: yearEndDate
+      $gte: startOfYear,
+      $lte: endOfYear
     }
   });
 
@@ -219,6 +251,7 @@ exports.DashBoardDetails = async (req, res) => {
     const BankDetails = await getBankAmount();
     const otherDetails = await getOthers();
     const maxminDetails = await getExpenseDetails();
+    const maxIncomeDetails = await getIncomeDetails();
     res.status(200).json({ 
       monthlyDetails, 
       weeklyDetails, 
@@ -227,7 +260,8 @@ exports.DashBoardDetails = async (req, res) => {
       cashDetails,
       BankDetails,
       otherDetails,
-      maxminDetails
+      maxminDetails,
+      maxIncomeDetails
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
