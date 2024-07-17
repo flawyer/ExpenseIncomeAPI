@@ -1,7 +1,7 @@
 const { Expense } = require('../models/expense.model');
 const { Income } = require('../models/income.model');
 const { ExpenseType } = require('../models/expensetype.model');
-const { IncomeType, IncomeSource } = require('../models/incomesource.model');
+const {  IncomeSource } = require('../models/incomesource.model');
 
 const getMonthlyDetails = async () => {
   const currentMonth = new Date();
@@ -195,7 +195,7 @@ const getIncomeDetails = async () => {
   }
 
   const incomeAmounts = incomes.map(income => ({
-    amount: parseFloat(income.incomeAmount),
+    amount: parseFloat(income.Amount),
     incomeFormId: income.incomeTypeId
   }));
 
