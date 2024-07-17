@@ -1,4 +1,4 @@
-const { Expense } = require('../models/expense.model');
+const { Expense, Expense } = require('../models/expense.model');
 const { Income } = require('../models/income.model');
 
 const getMonthlyDetails = async () => {
@@ -102,6 +102,80 @@ const getWeeklyDetails = async () => {
   return { weekStartDate, weekEndDate, totalIncome, totalExpense, weeklySaving };
 };
 
+const getCashAmount = async () => {
+  const incomes = await Income.find({ incomeFormId: "6697463f060910fb26df4654" });
+  const expenses = await Expense.find({ expenseFormId: "66974659060910fb26df465c" });
+
+  const incomeAmounts = incomes.map(income => parseFloat(income.incomeAmount));
+  const totalIncome = incomeAmounts.reduce((acc, curr) => acc + curr, 0);
+
+  const expenseAmounts = expenses.map(expense => parseFloat(expense.expenseAmount));
+  const totalExpense = expenseAmounts.reduce((acc, curr) => acc + curr, 0);
+
+  const Amount = totalIncome - totalExpense;
+  return Amount;
+}
+
+const getBankAmount = async () => {
+  const incomes = await Income.find({ incomeFormId: "66974635060910fb26df4651" });
+  const expenses = await Expense.find({ expenseFormId: "6697464d060910fb26df4659" });
+
+  const incomeAmounts = incomes.map(income => parseFloat(income.incomeAmount));
+  const totalIncome = incomeAmounts.reduce((acc, curr) => acc + curr, 0);
+
+  const expenseAmounts = expenses.map(expense => parseFloat(expense.expenseAmount));
+  const totalExpense = expenseAmounts.reduce((acc, curr) => acc + curr, 0);
+
+  const Amount = totalIncome - totalExpense;
+  return Amount;
+}
+
+const getOthers = async () => {
+  const incomes = await Income.find({
+    incomeFormId: { $nin: ["6697463f060910fb26df4654", "66974635060910fb26df4651"] }
+  });
+  const expenses = await Expense.find({
+    expenseFormId: { $nin: ["66974659060910fb26df465c", "6697464d060910fb26df4659"] }
+  });
+
+  const incomeAmounts = incomes.map(income => parseFloat(income.incomeAmount));
+  const totalIncome = incomeAmounts.reduce((acc, curr) => acc + curr, 0);
+
+  const expenseAmounts = expenses.map(expense => parseFloat(expense.expenseAmount));
+  const totalExpense = expenseAmounts.reduce((acc, curr) => acc + curr, 0);
+
+  const Amount = totalIncome - totalExpense;
+  return Amount;
+}
+const getExpenseDetails = async () => {
+  const expenses = await Expense.find({});
+
+  if (expenses.length === 0) {
+    return {
+      maxExpense: 0,
+      minExpense: 0,
+      maxExpenseFormId: null,
+      minExpenseFormId: null
+    };
+  }
+
+  const expenseAmounts = expenses.map(expense => ({
+    amount: parseFloat(expense.expenseAmount),
+    expenseFormId: expense.expenseFormId
+  }));
+
+  const maxExpense = expenseAmounts.reduce((max, expense) => expense.amount > max.amount ? expense : max, expenseAmounts[0]);
+  const minExpense = expenseAmounts.reduce((min, expense) => expense.amount < min.amount ? expense : min, expenseAmounts[0]);
+
+  const maxExpenseForm = await ExpenseForm.findById(maxExpense.expenseFormId);
+  const minExpenseForm = await ExpenseForm.findById(minExpense.expenseFormId);
+
+  return {
+    maxExpenseFormName: maxExpenseForm ? maxExpenseForm.name : null,
+    minExpenseFormName: minExpenseForm ? minExpenseForm.name : null
+  };
+}
+
 const getYearlyDetails = async () => {
   const currentDate = new Date();
   const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
@@ -141,11 +215,16 @@ exports.DashBoardDetails = async (req, res) => {
     const weeklyDetails = await getWeeklyDetails();
     const yearlyDetails = await getYearlyDetails();
     const dailyDetails = await getDailyDetails();
+    const cashDetails = await getCashAmount();
+    const BankDetails = await getBankAmount();
     res.status(200).json({ 
       monthlyDetails, 
       weeklyDetails, 
       yearlyDetails,
-      dailyDetails
+      dailyDetails,
+      cashDetails,
+      BankDetails,
+      MinimumExpense 
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
