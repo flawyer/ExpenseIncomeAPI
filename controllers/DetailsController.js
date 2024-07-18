@@ -2,6 +2,7 @@ const { Expense } = require('../models/expense.model');
 const { Income } = require('../models/income.model');
 const { ExpenseType } = require('../models/expensetype.model');
 const {  IncomeSource } = require('../models/incomesource.model');
+const { IncomeForm } = require('../models/incomeform.model');
 
 const getMonthlyDetails = async () => {
   const currentMonth = new Date();
@@ -196,7 +197,7 @@ const getIncomeDetails = async () => {
 
   const incomeAmounts = incomes.map(income => ({
     amount: parseFloat(income.Amount),
-    incomeFormId: income.incomeTypeId
+    incomeFormId: income.incomeSourceId
   }));
 
   const maxIncome = incomeAmounts.reduce((max, income) => income.amount > max.amount ? income : max, incomeAmounts[0]);
