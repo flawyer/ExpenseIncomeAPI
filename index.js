@@ -1,5 +1,6 @@
 const express = require('express'); 
 const cors = require('cors');
+require('dotenv').config(); 
 const Income  = require('./routes/IncomeRoutes');
 const Expense = require('./routes/ExpenseRoutes');
 const Details = require('./routes/DetailRoutes');
@@ -33,7 +34,7 @@ app.listen(port, () => {
 
 async function connectToDatabase() {
     try {
-        await mongoose.connect("mongodb+srv://flawyer:zINIerlXM1DzXDmY@cluster0.ski5o78.mongodb.net/MisApi?retryWrites=true&w=majority");
+        await mongoose.connect(process.env.DATABASE_CONNECT);
         console.log("Connected to database");
     } catch (error) {
         console.error("Not connected to database:", error);
