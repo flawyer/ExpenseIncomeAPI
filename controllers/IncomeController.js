@@ -1,6 +1,6 @@
 const {Income} = require('../models/income.model');
 const { IncomeForm } = require('../models/incomeform.model');
-
+const {IncomeSource} = require('../models/incomesource.model')
 exports.InsertIncome = async(req,res) =>{
     try{
         const inIncome = new Income(req.body);
@@ -50,19 +50,21 @@ exports.GetIncome = async (req, res) => {
       const income = await Income.find().lean(); 
       
       const incomeDetails = await Promise.all(income.map(async (inc) => {
+console.log(inc);
         const incomeSource = await IncomeSource.findById(inc.incomeSourceId).lean();
         const incomeForm = await IncomeForm.findById(inc.incomeFormId).lean();
-        
+        debugger;
+        console.log(incomeSource);
         return {
           ...inc,
-          incomeSourceName: incomeSource ? incomeSource.Name : 'Unknown',
-          incomeFormName: incomeForm ? incomeForm.Name : 'Unknown'
+          incomeSourceName: incomeSource ? incomeSource.name : 'Unknown',
+          incomeFormName: incomeForm ? incomeForm.name : 'Unknown'
         };
       }));
   
       res.status(200).json(incomeDetails);
     } catch (error) {
-      console.error(error); // Log the error for debugging purposes
+      console.error(error); 
       res.status(500).json({ error: 'Internal server error' });
     }
   };

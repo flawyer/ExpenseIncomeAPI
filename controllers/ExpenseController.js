@@ -1,4 +1,6 @@
 const {Expense} = require('../models/expense.model');
+const { ExpenseForm } = require('../models/expenseform.model');
+const { ExpenseType } = require('../models/expensetype.model');
 
 exports.InsertExpense = async(req,res) =>{
     try{
@@ -46,10 +48,23 @@ exports.GetExpense = async (req, res) => {
 
   exports.GetAllExpense = async (req, res) => {
     try {
-      const Expenses = await Expense.find();
+      const expense = await Expense.find().lean(); 
+      
+      const expenseDetails = await Promise.all(expense.map(async (inc) => {
+console.log(inc);
+        const expenseSource = await ExpenseType.findById(inc.expenseTypeId).lean();
+        const expenseForm = await ExpenseForm.findById(inc.expenseFormId).lean();
+        debugger;
+        return {
+          ...inc,
+          expenseSourceName: expenseSource ? expenseSource.name : 'Unknown',
+          expenseFormName: expenseForm ? expenseForm.name : 'Unknown'
+        };
+      }));
   
-      res.status(200).json(Expenses);
+      res.status(200).json(expenseDetails);
     } catch (error) {
+      console.error(error); 
       res.status(500).json({ error: 'Internal server error' });
     }
   };
